@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Préstamos</title>
+</head>
+
+<body>
+    <h1>Listado de préstamos</h1>
+    <a th:href="@{/}">Volver al menú</a>
+    <a th:href="@{/prestamos/nuevo}">Nuevo registro</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Libro</th>
+                <th>Socio</th>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="prestamo : ${prestamos}">
+                <td th:text="${prestamo.id}"></td>
+                <td th:text="${prestamo.libro.titulo}"></td>
+                <td th:text="${prestamo.socio.nombre}"></td>
+                <td th:text="${prestamo.fechaInicio}"></td>
+                <td th:text="${prestamo.fechaFin}"></td>
+                <td th:text="${prestamo.estado}"></td>
+
+                <td>
+                    <a th:href="@{/prestamos/eliminar/{id}(id=${prestamo.id})}"
+                        onclick="return confirm('¿Seguro que deseas eliminar este préstamo?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Socios</title>
+</head>
+<body>
+    <h1>Socios</h1>
+    <a th:href="@{/}">Volver al menú</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Fin Penalización</th>
+        </tr>
+        <tr th:each="socio : ${socios}">
+            <td th:text="${socio.id}"></td>
+            <td th:text="${socio.nombre}"></td>
+            <td th:text="${socio.email}"></td>
+            <td th:text="${socio.finPenalizacion}"></td>
+        </tr>
+    </table>
+</body>
+</html>
