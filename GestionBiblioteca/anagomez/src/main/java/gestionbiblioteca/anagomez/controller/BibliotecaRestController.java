@@ -51,13 +51,17 @@ public class BibliotecaRestController {
 
     @PostMapping("/prestamos")
     public Prestamo crearPrestamo(@RequestBody Prestamo prestamo) {
-        try {
-            return prestamoService.crearPrestamo(
-                    prestamo.getLibro().getId(),
-                    prestamo.getSocio().getId());
+        Socio socio = service.obtenerSocio(prestamo.getSocio().getId());
 
-        } catch (Exception e) {
-            throw new RuntimeException("Error al crear préstamo: " + e.getMessage());
+        // Validación de penalización y límite de préstamos
+        if (!prestamoService.puedePrestar(socio)) {
+            throw new RuntimeException(
+                    "El socio no puede realizar préstamos: máximo 3 activos o tiene penalización vigente.");
         }
+
+        return prestamoService.crearPrestamo(
+                prestamo.getLibro().getId(),
+                prestamo.getSocio().getId());
     }
+
 }

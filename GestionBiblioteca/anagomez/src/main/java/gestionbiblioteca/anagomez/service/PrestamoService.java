@@ -34,12 +34,13 @@ public class PrestamoService {
      */
     public boolean puedePrestar(Socio socio) {
 
+        // 1️⃣ No más de 3 préstamos activos
         long activos = prestamoRepo.countBySocioIdAndEstado(socio.getId(), Prestamo.Estado.ACTIVO);
         if (activos >= 3)
             return false;
 
-        if (socio.getFinPenalizacion() != null &&
-                socio.getFinPenalizacion().isAfter(LocalDate.now()))
+        // 2️⃣ Penalización activa
+        if (socio.getFinPenalizacion() != null && socio.getFinPenalizacion().isAfter(LocalDate.now()))
             return false;
 
         return true;
@@ -100,6 +101,10 @@ public class PrestamoService {
         }
 
         return prestamoRepo.save(p);
+    }
+
+    public long countPrestamosActivosPorSocio(Long socioId) {
+        return prestamoRepo.countBySocioIdAndEstado(socioId, Prestamo.Estado.ACTIVO);
     }
 
     /*

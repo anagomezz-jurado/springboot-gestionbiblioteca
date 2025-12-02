@@ -18,7 +18,6 @@
                 <th>Socio</th>
                 <th>Fecha inicio</th>
                 <th>Fecha Limite</th>
-                <th>Fecha fin</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -33,10 +32,7 @@
 
                 <!-- Fecha límite -->
                 <td th:text="${#temporals.format(prestamo.fechaLimite, 'dd/MM/yyyy')}"></td>
-
-                <!-- Fecha fin -->
-                <td th:text="${prestamo.fechaFin != null ? #temporals.format(prestamo.fechaFin, 'dd/MM/yyyy HH:mm') : '-'}"></td>
-
+                
                 <td th:text="${prestamo.estado}"></td>
 
                 <td>

@@ -66,15 +66,18 @@ public class WebController {
     @PostMapping("/prestamos/guardar")
     public String guardarPrestamo(@ModelAttribute Prestamo prestamo, Model model) {
         try {
-            // Obtener las entidades reales a partir de los IDs
+            // Obtener entidades reales
             Libro libro = bibliotecaService.obtenerLibro(prestamo.getLibro().getId());
             Socio socio = bibliotecaService.obtenerSocio(prestamo.getSocio().getId());
 
-            prestamo.setLibro(libro);
-            prestamo.setSocio(socio);
+            // VALIDACIÓN: Limite y penalización
+            if (!prestamoService.puedePrestar(socio)) {
+                throw new RuntimeException(
+                        "El socio no puede realizar préstamos: máximo 3 activos o tiene penalización vigente.");
+            }
 
-            // Guardar préstamo usando el servicio
-            prestamoService.crearPrestamo(socio.getId(), libro.getId());
+            // Crear préstamo
+            prestamoService.crearPrestamo(libro.getId(), socio.getId());
 
             return "redirect:/prestamos";
         } catch (Exception e) {
@@ -84,6 +87,7 @@ public class WebController {
             model.addAttribute("socios", bibliotecaService.getAllSocios());
             return "nuevoPrestamo";
         }
+
     }
 
     /* ========== ELIMINAR PRÉSTAMO ========== */
