@@ -4,17 +4,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import gestionbiblioteca.anagomez.excepciones.ResourceNotFoundException;
 import gestionbiblioteca.anagomez.modelo.Libro;
 import gestionbiblioteca.anagomez.modelo.Prestamo;
 import gestionbiblioteca.anagomez.modelo.Socio;
 import gestionbiblioteca.anagomez.service.BibliotecaService;
 import gestionbiblioteca.anagomez.service.PrestamoService;
+import jakarta.validation.Valid;
 
 @Controller
 public class WebController {
@@ -49,8 +53,12 @@ public class WebController {
         return "nuevoLibro";
     }
 
+    // Aquí reemplazas tu antiguo guardarLibro:
     @PostMapping("/libros/guardar")
-    public String guardarLibro(@ModelAttribute Libro libro) {
+    public String guardarLibro(@Valid @ModelAttribute Libro libro, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "nuevoLibro";
+        }
         bibliotecaService.saveLibro(libro);
         return "redirect:/libros";
     }
@@ -97,8 +105,12 @@ public class WebController {
         return "nuevoSocio";
     }
 
+    // Aquí reemplazas tu antiguo guardarSocio:
     @PostMapping("/socios/guardar")
-    public String guardarSocio(@ModelAttribute Socio socio) {
+    public String guardarSocio(@Valid @ModelAttribute Socio socio, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "nuevoSocio"; // vuelve al formulario mostrando errores
+        }
         bibliotecaService.saveSocio(socio);
         return "redirect:/socios";
     }
@@ -177,4 +189,11 @@ public class WebController {
         prestamoService.devolverPrestamo(id);
         return "redirect:/prestamos";
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundWeb(ResourceNotFoundException ex, Model model) {
+        model.addAttribute("error", ex.getMessage());
+        return "error"; // crea una plantilla error.html
+    }
+
 }

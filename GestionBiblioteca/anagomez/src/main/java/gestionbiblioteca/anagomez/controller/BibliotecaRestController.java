@@ -1,13 +1,21 @@
 package gestionbiblioteca.anagomez.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import gestionbiblioteca.anagomez.excepciones.ResourceNotFoundException;
 import gestionbiblioteca.anagomez.modelo.Libro;
 import gestionbiblioteca.anagomez.modelo.Socio;
 import gestionbiblioteca.anagomez.modelo.Prestamo;
 import gestionbiblioteca.anagomez.service.BibliotecaService;
 import gestionbiblioteca.anagomez.service.PrestamoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -33,8 +41,14 @@ public class BibliotecaRestController {
     }
 
     @PostMapping("/libros")
-    public Libro crearLibro(@RequestBody Libro libro) {
-        return service.saveLibro(libro);
+    public ResponseEntity<?> crearLibro(@Valid @RequestBody Libro libro, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            result.getFieldErrors().forEach(e -> errores.put(e.getField(), e.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errores); // 400 Bad Request
+        }
+        Libro nuevo = service.saveLibro(libro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevo); // 201 Created
     }
 
     @PutMapping("/libros/{id}")
@@ -62,8 +76,14 @@ public class BibliotecaRestController {
     }
 
     @PostMapping("/socios")
-    public Socio crearSocio(@RequestBody Socio socio) {
-        return service.saveSocio(socio);
+    public ResponseEntity<?> crearSocio(@Valid @RequestBody Socio socio, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            result.getFieldErrors().forEach(e -> errores.put(e.getField(), e.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errores); // 400 Bad Request
+        }
+        Socio nuevo = service.saveSocio(socio);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevo); // 201 Created
     }
 
     @PutMapping("/socios/{id}")
@@ -79,7 +99,7 @@ public class BibliotecaRestController {
         prestamoService.eliminar(id);
     }
 
-    /* ===================== PRESTAMOS ===================== */
+    /* ===================== PRÉSTAMOS ===================== */
     @GetMapping("/prestamos")
     public List<Prestamo> getAllPrestamos() {
         return prestamoService.listar();
@@ -110,6 +130,13 @@ public class BibliotecaRestController {
     @DeleteMapping("/prestamos/{id}")
     public void borrarPrestamo(@PathVariable Long id) {
         prestamoService.eliminar(id);
+    }
+
+    /* ===================== MANEJO DE ERRORES ===================== */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage())); // 404 Not Found
     }
 
 }

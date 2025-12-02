@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import gestionbiblioteca.anagomez.excepciones.ResourceNotFoundException;
 import gestionbiblioteca.anagomez.modelo.Libro;
 import gestionbiblioteca.anagomez.modelo.Socio;
 import gestionbiblioteca.anagomez.modelo.Prestamo;
@@ -33,7 +34,8 @@ public class BibliotecaService {
     }
 
     public Libro obtenerLibro(Long id) {
-        return libroRepo.findById(id).orElseThrow();
+        return libroRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Libro no encontrado con id: " + id));
     }
 
     public void eliminarLibro(Long id) {
@@ -55,7 +57,8 @@ public class BibliotecaService {
     }
 
     public Socio obtenerSocio(Long id) {
-        return socioRepo.findById(id).orElseThrow();
+        return socioRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Socio no encontrado con id: " + id));
     }
 
     public void eliminarSocio(Long id) {

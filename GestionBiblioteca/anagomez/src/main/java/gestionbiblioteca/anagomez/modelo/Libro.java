@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "libro")
@@ -14,9 +15,11 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El título es obligatorio")
     @Column(nullable = false)
     private String titulo;
 
+    @NotBlank(message = "El autor es obligatorio")
     @Column(nullable = false)
     private String autor;
     @JsonIgnore
