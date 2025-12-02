@@ -7,6 +7,13 @@ import gestionbiblioteca.anagomez.modelo.Prestamo;
 
 @Repository
 public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
-    // Cambiado socioId por id, que es el campo correcto en Socio
-    Prestamo findByLibroIdAndSocioId(Long libroId, Long socioId);
+
+    // Saber si un libro está actualmente prestado
+    boolean existsByLibroIdAndEstado(Long libroId, Prestamo.Estado estado);
+
+    // Obtener el préstamo ACTIVO de un libro
+    Prestamo findByLibroIdAndEstado(Long libroId, Prestamo.Estado estado);
+
+    // Contar préstamos activos de un socio
+    long countBySocioIdAndEstado(Long socioId, Prestamo.Estado estado);
 }

@@ -4,7 +4,7 @@
 - git init
 - git add .
 - git commit -m "Primer commit"
-- git remote add origin https://github.com/anagomezz-jurado/spring-gestionbiblioteca.git
+- git remote add origin https://github.com/anagomezz-jurado/springboot-gestionbiblioteca.git
 - SUBIR PROYECTO
 	- git branch -M main
 	- git push -u origin main

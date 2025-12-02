@@ -1,5 +1,6 @@
 package gestionbiblioteca.anagomez.modelo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -25,6 +26,15 @@ public class Prestamo {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Estado estado; // ACTIVO o DEVUELTO
+
+    @Column
+    private LocalDate fechaLimite; // NUEVO
+
+    @Column
+    private Long diasRetraso; // NUEVO
+
+    @Column
+    private Long penalizacion; // NUEVO
 
     public enum Estado {
         DISPONIBLE, ACTIVO, DEVUELTO, RETRASADO
@@ -76,6 +86,30 @@ public class Prestamo {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public LocalDate getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(LocalDate fechaLimite) {
+        this.fechaLimite = fechaLimite;
+    }
+
+    public Long getDiasRetraso() {
+        return diasRetraso;
+    }
+
+    public void setDiasRetraso(Long diasRetraso) {
+        this.diasRetraso = diasRetraso;
+    }
+
+    public Long getPenalizacion() {
+        return penalizacion;
+    }
+
+    public void setPenalizacion(Long penalizacion) {
+        this.penalizacion = penalizacion;
     }
 
     // getters y setters

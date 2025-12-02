@@ -16,15 +16,14 @@ public class BibliotecaService {
 
     private final LibroRepository libroRepo;
     private final SocioRepository socioRepo;
-    private final PrestamoRepository prestamoRepo;
 
-    public BibliotecaService(LibroRepository libroRepo, SocioRepository socioRepo, PrestamoRepository prestamoRepo) {
+    public BibliotecaService(LibroRepository libroRepo, SocioRepository socioRepo) {
         this.libroRepo = libroRepo;
         this.socioRepo = socioRepo;
-        this.prestamoRepo = prestamoRepo;
     }
 
-    // Libros
+    /* ======================= LIBROS ======================= */
+
     public List<Libro> getAllLibros() {
         return libroRepo.findAll();
     }
@@ -33,7 +32,8 @@ public class BibliotecaService {
         return libroRepo.save(libro);
     }
 
-    // Socios
+    /* ======================= SOCIOS ======================= */
+
     public List<Socio> getAllSocios() {
         return socioRepo.findAll();
     }
@@ -42,13 +42,11 @@ public class BibliotecaService {
         return socioRepo.save(socio);
     }
 
-    // Prestamos
-    public List<Prestamo> getAllPrestamos() {
-        return prestamoRepo.findAll();
+    public Socio obtenerSocio(Long id) {
+        return socioRepo.findById(id).orElseThrow();
     }
 
-    public Prestamo savePrestamo(Prestamo prestamo) {
-        return prestamoRepo.save(prestamo);
+    public Libro obtenerLibro(Long id) {
+        return libroRepo.findById(id).orElseThrow();
     }
-
 }
