@@ -7,27 +7,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "libro")
+@Entity // Marca la clase como una entidad de JPA (tabla en la BD)
+@Table(name = "libro") // Nombre de la tabla en la base de datos
 public class Libro {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // Clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremental
     private Long id;
 
-    @NotBlank(message = "El título es obligatorio")
-    @Column(nullable = false)
+    @NotBlank(message = "El título es obligatorio") // Validación de campo obligatorio
+    @Column(nullable = false) // No permite nulos en BD
     private String titulo;
 
     @NotBlank(message = "El autor es obligatorio")
     @Column(nullable = false)
     private String autor;
-    @JsonIgnore
+
+    @JsonIgnore // Evita bucles infinitos en JSON al serializar préstamos
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prestamo> prestamos;
+    // Relación 1:N: Un libro puede tener muchos préstamos
 
-    // getters y setters
-
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -59,5 +60,4 @@ public class Libro {
     public void setPrestamos(List<Prestamo> prestamos) {
         this.prestamos = prestamos;
     }
-
 }

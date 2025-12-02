@@ -22,24 +22,24 @@ public class Socio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // ID del socio
 
     @NotBlank(message = "El nombre es obligatorio")
     @Column(nullable = false)
-    private String nombre;
+    private String nombre; // Nombre del socio
 
     @Email(message = "Debe ser un email válido")
     @NotBlank(message = "El email es obligatorio")
     @Column(nullable = false, unique = true)
-    private String email;
+    private String email; // Email único del socio
 
-    private LocalDate finPenalizacion;
+    private LocalDate finPenalizacion; // Fecha hasta la que tiene penalización
 
-    @JsonIgnore
+    @JsonIgnore // Evita bucles al serializar préstamos
     @OneToMany(mappedBy = "socio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Prestamo> prestamos;
+    private List<Prestamo> prestamos; // Lista de préstamos del socio
 
-    // getters y setters
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -79,5 +79,4 @@ public class Socio {
     public void setPrestamos(List<Prestamo> prestamos) {
         this.prestamos = prestamos;
     }
-
 }

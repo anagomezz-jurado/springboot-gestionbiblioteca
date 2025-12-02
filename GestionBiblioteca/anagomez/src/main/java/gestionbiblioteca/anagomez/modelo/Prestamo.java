@@ -10,36 +10,35 @@ public class Prestamo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // ID del préstamo
 
     @ManyToOne
-    @JoinColumn(name = "socio_id", nullable = false)
+    @JoinColumn(name = "socio_id", nullable = false) // FK hacia socio
     private Socio socio;
 
     @ManyToOne
-    @JoinColumn(name = "libro_id", nullable = false)
+    @JoinColumn(name = "libro_id", nullable = false) // FK hacia libro
     private Libro libro;
 
-    private LocalDateTime fechaInicio;
-    private LocalDateTime fechaFin;
+    private LocalDateTime fechaInicio; // Fecha de préstamo
+    private LocalDateTime fechaFin; // Fecha de devolución
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Estado estado; // ACTIVO o DEVUELTO
+    private Estado estado; // ACTIVO, DEVUELTO, DISPONIBLE, RETRASADO
 
     @Column
-    private LocalDate fechaLimite; // NUEVO
-
+    private LocalDate fechaLimite; // Fecha límite de devolución
     @Column
-    private Long diasRetraso; // NUEVO
-
+    private Long diasRetraso; // Días de retraso
     @Column
-    private Long penalizacion; // NUEVO
+    private Long penalizacion; // Penalización monetaria o puntos
 
     public enum Estado {
         DISPONIBLE, ACTIVO, DEVUELTO, RETRASADO
     }
 
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -111,7 +110,4 @@ public class Prestamo {
     public void setPenalizacion(Long penalizacion) {
         this.penalizacion = penalizacion;
     }
-
-    // getters y setters
-
 }

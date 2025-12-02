@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Socios</title>
+    <link rel="stylesheet" th:href="@{estilo.css}">
+
+</head>
+<body>
+<h1>Socios</h1>
+<form th:action="@{/socios/buscar}" method="get">
+    <input type="text" name="query" th:value="${query}" placeholder="Buscar socio por nombre o email"/>
+    <button type="submit">Buscar</button>
+</form>
+
+
+<a th:href="@{/}">Volver al menú</a>
+<a th:href="@{/socios/nuevo}">Nuevo Socio</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Fin Penalización</th>
+        <th>Acciones</th>
+    </tr>
+    <tr th:each="socio : ${socios}">
+        <td th:text="${socio.id}"></td>
+        <td th:text="${socio.nombre}"></td>
+        <td th:text="${socio.email}"></td>
+        <td th:text="${socio.finPenalizacion}"></td>
+        <td>
+           <a th:href="@{'/socios/editar/' + ${socio.id}}">Editar</a> |
+            <a th:href="@{'/socios/eliminar/' + ${socio.id}}"  onclick="return confirm('¿Seguro que deseas eliminar este socio?');">
+            Eliminar</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

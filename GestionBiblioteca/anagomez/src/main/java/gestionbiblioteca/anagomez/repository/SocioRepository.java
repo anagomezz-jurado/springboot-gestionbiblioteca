@@ -9,5 +9,7 @@ import gestionbiblioteca.anagomez.modelo.Socio;
 
 @Repository
 public interface SocioRepository extends JpaRepository<Socio, Long> {
+    // Búsqueda por nombre o email (ignora mayúsculas/minúsculas)
     List<Socio> findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(String nombre, String email);
+
 }
