@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Libros</title>
+    <link rel="stylesheet" th:href="@{estilo.css}">
+
 </head>
 <body>
 <h1>Lista de Libros</h1>
+
+<form th:action="@{/libros/buscar}" method="get">
+    <input type="text" name="query" th:value="${query}" placeholder="Buscar libro por título o autor"/>
+    <button type="submit">Buscar</button>
+</form>
+
 <a th:href="@{/}">Volver al menú</a>
+<a th:href="@{/libros/nuevo}">Nuevo Libro</a>
 <table border="1">
     <tr>
         <th>ID</th>
         <th>Título</th>
         <th>Autor</th>
+        <th>Acciones</th>
     </tr>
     <tr th:each="libro : ${libros}">
         <td th:text="${libro.id}"></td>
         <td th:text="${libro.titulo}"></td>
         <td th:text="${libro.autor}"></td>
+        <td>
+            <a th:href="@{'/libros/editar/' + ${libro.id}}">Editar</a> |
+            <a th:href="@{'/libros/eliminar/' + ${libro.id}}"
+               onclick="return confirm('¿Eliminar libro?')">Eliminar</a>
+        </td>
     </tr>
 </table>
 </body>

@@ -1,0 +1,9 @@
+<form th:action="@{/libros/guardar}" th:object="${libro}" method="post">
+    <label>Título:</label>
+    <input type="text" th:field="*{titulo}" required><br><br>
+
+    <label>Autor:</label>
+    <input type="text" th:field="*{autor}" required><br><br>
+
+    <button type="submit">Guardar</button>
+</form>

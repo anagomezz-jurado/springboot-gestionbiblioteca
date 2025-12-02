@@ -1,11 +1,14 @@
 package gestionbiblioteca.anagomez.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import gestionbiblioteca.anagomez.modelo.Libro;
 import gestionbiblioteca.anagomez.modelo.Prestamo;
@@ -19,21 +22,19 @@ public class WebController {
     private final BibliotecaService bibliotecaService;
     private final PrestamoService prestamoService;
 
-    public WebController(
-            BibliotecaService bibliotecaService,
-            PrestamoService prestamoService) {
-
+    public WebController(BibliotecaService bibliotecaService, PrestamoService prestamoService) {
         this.bibliotecaService = bibliotecaService;
         this.prestamoService = prestamoService;
     }
 
-    /* ========== MENÚ PRINCIPAL ========== */
+    /* ========== MENÚ ========== */
+
     @GetMapping("/")
     public String menu() {
         return "menu";
     }
 
-    /* ========== LISTADOS WEB ========== */
+    /* ========== LIBROS ========== */
 
     @GetMapping("/libros")
     public String listarLibros(Model model) {
@@ -41,11 +42,93 @@ public class WebController {
         return "libros";
     }
 
+    /* ========== NUEVO LIBRO ========== */
+    @GetMapping("/libros/nuevo")
+    public String nuevoLibro(Model model) {
+        model.addAttribute("libro", new Libro());
+        return "nuevoLibro";
+    }
+
+    @PostMapping("/libros/guardar")
+    public String guardarLibro(@ModelAttribute Libro libro) {
+        bibliotecaService.saveLibro(libro);
+        return "redirect:/libros";
+    }
+
+    /* ========== EDITAR LIBRO ========== */
+    @GetMapping("/libros/editar/{id}")
+    public String editarLibro(@PathVariable Long id, Model model) {
+        Libro libro = bibliotecaService.obtenerLibro(id);
+        model.addAttribute("libro", libro);
+        return "editarLibro";
+    }
+
+    /* ========== ELIMINAR LIBRO ========== */
+    @GetMapping("/libros/eliminar/{id}")
+    public String eliminarLibro(@PathVariable Long id) {
+        bibliotecaService.eliminarLibro(id);
+        return "redirect:/libros";
+    }
+
+    @GetMapping("/libros/buscar")
+    public String buscarLibros(@RequestParam(name = "query", required = false) String query, Model model) {
+        List<Libro> libros;
+        if (query == null || query.isEmpty()) {
+            libros = bibliotecaService.getAllLibros();
+        } else {
+            libros = bibliotecaService.buscarLibros(query);
+        }
+        model.addAttribute("libros", libros);
+        model.addAttribute("query", query);
+        return "libros";
+    }
+
+    /* ========== SOCIOS ========== */
+
     @GetMapping("/socios")
     public String listarSocios(Model model) {
         model.addAttribute("socios", bibliotecaService.getAllSocios());
         return "socios";
     }
+
+    @GetMapping("/socios/nuevo")
+    public String nuevoSocio(Model model) {
+        model.addAttribute("socio", new Socio());
+        return "nuevoSocio";
+    }
+
+    @PostMapping("/socios/guardar")
+    public String guardarSocio(@ModelAttribute Socio socio) {
+        bibliotecaService.saveSocio(socio);
+        return "redirect:/socios";
+    }
+
+    @GetMapping("/socios/editar/{id}")
+    public String editarSocio(@PathVariable Long id, Model model) {
+        model.addAttribute("socio", bibliotecaService.obtenerSocio(id));
+        return "editarSocio";
+    }
+
+    @GetMapping("/socios/eliminar/{id}")
+    public String eliminarSocio(@PathVariable Long id) {
+        bibliotecaService.eliminarSocio(id); // AHORA SÍ BORRA SOCIOS
+        return "redirect:/socios";
+    }
+
+    @GetMapping("/socios/buscar")
+    public String buscarSocios(@RequestParam(name = "query", required = false) String query, Model model) {
+        List<Socio> socios;
+        if (query == null || query.isEmpty()) {
+            socios = bibliotecaService.getAllSocios();
+        } else {
+            socios = bibliotecaService.buscarSocios(query);
+        }
+        model.addAttribute("socios", socios);
+        model.addAttribute("query", query);
+        return "socios";
+    }
+
+    /* ========== PRÉSTAMOS ========== */
 
     @GetMapping("/prestamos")
     public String listarPrestamos(Model model) {
@@ -53,10 +136,8 @@ public class WebController {
         return "prestamos";
     }
 
-    /* ========== NUEVO PRÉSTAMO ========== */
-
     @GetMapping("/prestamos/nuevo")
-    public String mostrarFormularioPrestamo(Model model) {
+    public String nuevoPrestamo(Model model) {
         model.addAttribute("prestamo", new Prestamo());
         model.addAttribute("libros", bibliotecaService.getAllLibros());
         model.addAttribute("socios", bibliotecaService.getAllSocios());
@@ -65,36 +146,35 @@ public class WebController {
 
     @PostMapping("/prestamos/guardar")
     public String guardarPrestamo(@ModelAttribute Prestamo prestamo, Model model) {
+
         try {
-            // Obtener entidades reales
             Libro libro = bibliotecaService.obtenerLibro(prestamo.getLibro().getId());
             Socio socio = bibliotecaService.obtenerSocio(prestamo.getSocio().getId());
 
-            // VALIDACIÓN: Limite y penalización
             if (!prestamoService.puedePrestar(socio)) {
-                throw new RuntimeException(
-                        "El socio no puede realizar préstamos: máximo 3 activos o tiene penalización vigente.");
+                throw new Exception("Este socio no puede realizar más préstamos.");
             }
 
-            // Crear préstamo
             prestamoService.crearPrestamo(libro.getId(), socio.getId());
-
             return "redirect:/prestamos";
+
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("prestamo", new Prestamo());
             model.addAttribute("libros", bibliotecaService.getAllLibros());
             model.addAttribute("socios", bibliotecaService.getAllSocios());
             return "nuevoPrestamo";
         }
-
     }
-
-    /* ========== ELIMINAR PRÉSTAMO ========== */
 
     @GetMapping("/prestamos/eliminar/{id}")
     public String eliminarPrestamo(@PathVariable Long id) {
         prestamoService.eliminar(id);
+        return "redirect:/prestamos";
+    }
+
+    @GetMapping("/prestamos/devolver/{id}")
+    public String devolverPrestamo(@PathVariable Long id) {
+        prestamoService.devolverPrestamo(id);
         return "redirect:/prestamos";
     }
 }

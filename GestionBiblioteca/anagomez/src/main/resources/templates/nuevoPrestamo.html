@@ -3,31 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Nuevo Préstamo</title>
+    <link rel="stylesheet" th:href="@{estilo.css}">
+
 </head>
 <body>
-    <h1>Registrar nuevo préstamo</h1>
-
-    <form th:action="@{/prestamos/guardar}" th:object="${prestamo}" method="post">
-        <label>Libro:</label>
-        <select th:field="*{libro.id}" required>
-            <option th:each="libro : ${libros}" 
-                    th:value="${libro.id}" 
-                    th:text="${libro.titulo}">Libro</option>
-        </select>
-        <br><br>
-
-        <label>Socio:</label>
-        <select th:field="*{socio.id}" required>
-            <option th:each="socio : ${socios}" 
-                    th:value="${socio.id}" 
-                    th:text="${socio.nombre}">Socio</option>
-        </select>
-        <br><br>
-
-        <button type="submit">Guardar préstamo</button>
-    </form>
-
-    <br>
-    <a th:href="@{/prestamos}">Volver al listado de préstamos</a>
+<h1>Registrar nuevo préstamo</h1>
+<form th:action="@{/prestamos/guardar}" th:object="${prestamo}" method="post">
+    <label>Libro:</label>
+    <select th:field="*{libro.id}" required>
+        <option th:each="libro : ${libros}" th:value="${libro.id}" th:text="${libro.titulo}"></option>
+    </select>
+    <br><br>
+    <label>Socio:</label>
+    <select th:field="*{socio.id}" required>
+        <option th:each="socio : ${socios}" th:value="${socio.id}" th:text="${socio.nombre}"></option>
+    </select>
+    <br><br>
+    <button type="submit">Guardar préstamo</button>
+</form>
+<br>
+<a th:href="@{/prestamos}">Volver al listado</a>
 </body>
 </html>

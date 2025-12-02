@@ -22,7 +22,7 @@ public class BibliotecaService {
         this.socioRepo = socioRepo;
     }
 
-    /* ======================= LIBROS ======================= */
+    /* ========== LIBROS ========== */
 
     public List<Libro> getAllLibros() {
         return libroRepo.findAll();
@@ -32,7 +32,19 @@ public class BibliotecaService {
         return libroRepo.save(libro);
     }
 
-    /* ======================= SOCIOS ======================= */
+    public Libro obtenerLibro(Long id) {
+        return libroRepo.findById(id).orElseThrow();
+    }
+
+    public void eliminarLibro(Long id) {
+        libroRepo.deleteById(id);
+    }
+
+    public List<Libro> buscarLibros(String query) {
+        return libroRepo.findByTituloContainingIgnoreCaseOrAutorContainingIgnoreCase(query, query);
+    }
+
+    /* ========== SOCIOS ========== */
 
     public List<Socio> getAllSocios() {
         return socioRepo.findAll();
@@ -46,7 +58,12 @@ public class BibliotecaService {
         return socioRepo.findById(id).orElseThrow();
     }
 
-    public Libro obtenerLibro(Long id) {
-        return libroRepo.findById(id).orElseThrow();
+    public void eliminarSocio(Long id) {
+        socioRepo.deleteById(id);
     }
+
+    public List<Socio> buscarSocios(String query) {
+        return socioRepo.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
+    }
+
 }
